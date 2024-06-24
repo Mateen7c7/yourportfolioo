@@ -7,7 +7,7 @@ import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 
 function Store() {
-  const [range, setRange] = useState([0, 1000]);
+  const [range, setRange] = useState([0, 300]);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
   const [arrange, setArrange] = useState(null);
@@ -27,6 +27,14 @@ function Store() {
   let filteredData = data.filter((item) => {
     return item.price >= range[0] && item.price <= range[1];
   });
+
+  if (tag) {
+    filteredData = filteredData.filter((item) => {
+      return item.tag.includes(tag);
+    });
+  }
+
+  filteredData = filteredData.slice((page - 1) * showItems, page * showItems);
 
   if (arrange) {
     if (arrange === "des") {
@@ -51,12 +59,6 @@ function Store() {
     else if (arrange === "asc") setArrange("des");
   };
 
-  if (tag) {
-    filteredData = filteredData.filter((item) => {
-      return item.tag.includes(tag);
-    });
-  }
-
   const handleTag = (e) => {
     setTag(e.target.value);
   };
@@ -66,8 +68,6 @@ function Store() {
       return item.name.toLowerCase().includes(search.toLowerCase());
     });
   }
-
-  filteredData = filteredData.slice((page - 1) * showItems, page * showItems);
 
   const handleAdd = () => {
     if (page >= data.length / showItems) {
@@ -99,7 +99,7 @@ function Store() {
             <h3 className="text-xl font-medium ">Budget</h3>
             <RangeSlider
               min={0}
-              max={1000}
+              max={300}
               value={range}
               onInput={(value) => {
                 setRange(value);
@@ -209,9 +209,13 @@ function Store() {
         ))}
       </div>
       <div className="flex items-center justify-center gap-5 my-10 text-xl font-semibold">
-        <h1 className="cursor-pointer" onClick={handleMinus} >{"<"}</h1>
+        <h1 className="cursor-pointer" onClick={handleMinus}>
+          {"<"}
+        </h1>
         <h1 className="text-blue-800">{page}</h1>
-        <h1 className="cursor-pointer" onClick={handleAdd} >{">"}</h1>
+        <h1 className="cursor-pointer" onClick={handleAdd}>
+          {">"}
+        </h1>
       </div>
     </div>
   );
